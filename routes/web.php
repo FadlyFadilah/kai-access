@@ -16,3 +16,9 @@
 $router->get('/', function () use ($router) {
     return $router->app->version();
 });
+
+$router->get('admin/trains', 'TrainController@index');
+$router->get('admin/train/{slug}', 'TrainController@show');
+$router->post('admin/trains', 'TrainController@store');
+$router->put('admin/trains/{slug}', 'TrainController@update');
+$router->delete('admin/trains/{slug}', 'TrainController@destroy');

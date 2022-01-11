@@ -2,29 +2,28 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Support\Str;
-use App\Models\Train;
+use App\Models\Schedule;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
-class TrainController extends Controller
+class ScheduleController extends Controller
 {
     public function index(Request $request)
     {
         $acceptHeader = $request->header('Accept');
 
         if ($acceptHeader === 'application/json') {
-            $trains = Train::paginate(5)->toArray();
+            $Schedules = Schedule::paginate(5)->toArray();
 
             if ($acceptHeader === 'application/json') {
                 $response = [
-                    "total_count" => $trains["total"],
-                    "limit" => $trains["per_page"],
+                    "total_count" => $Schedules["total"],
+                    "limit" => $Schedules["per_page"],
                     "pagination" => [
-                        "next_page" => $trains["next_page_url"],
-                        "current_page" => $trains["current_page"]
+                        "next_page" => $Schedules["next_page_url"],
+                        "current_page" => $Schedules["current_page"]
                     ],
-                    "data" => $trains["data"],
+                    "data" => $Schedules["data"],
                 ];
                 return response()->json($response, 200);
             }
@@ -38,13 +37,13 @@ class TrainController extends Controller
         $acceptHeader = request()->header('Accept');
 
         if ($acceptHeader === 'application/json') {
-            $train = Train::where(['slug' => $slug])->with('station')->get();
+            $Schedule = Schedule::where(['slug' => $slug])->with('station')->get();
 
-            if (!$train) {
+            if (!$Schedule) {
                 abort(404);
             }
 
-            return response()->json($train, 200);
+            return response()->json($Schedule, 200);
         } else {
             return response('Not Acceptable!', 406);
         }
@@ -59,23 +58,10 @@ class TrainController extends Controller
 
             if ($contentTypeHeader === 'multipart/form-data; boundary=<calculated when request is sent>') {
                 $attr = request()->all();
-                $attr['slug'] = Str::slug(request('nama'));
 
-                $validationRules = [
-                    "nama" => 'required|min:5',
-                    "slug" => 'required|min:5',
-                    "kelas" => 'required|min:5',
-                    'station_id' => 'required|exists:stations,id'
-                ];
+                $Schedule = Schedule::create($attr);
 
-                $validator = Validator::make($attr, $validationRules);
-
-                if ($validator->fails()) {
-                    return response()->json($validator->errors(), 400);
-                }
-                $train = Train::create($attr);
-
-                return response()->json($train, 200);
+                return response()->json($Schedule, 200);
             } else {
                 return response('Unsupported Media Type', 415);
             }
@@ -93,31 +79,17 @@ class TrainController extends Controller
 
             if ($contentTypeHeader === 'multipart/form-data; boundary=<calculated when request is sent>') {
                 $input = request()->all();
-                $input['slug'] = Str::slug(request('nama'));
 
-                $validationRules = [
-                    "nama" => 'required|min:5',
-                    "slug" => 'required|min:5',
-                    "kelas" => 'required|min:5',
-                    'station_id' => 'required|exists:stations,id'
-                ];
+                $Schedule = Schedule::where(['slug' => $slug])->firstOrFail();
 
-                $validator = Validator::make($input, $validationRules);
-
-                if ($validator->fails()) {
-                    return response()->json($validator->errors(), 400);
-                }
-
-                $train = Train::where(['slug' => $slug])->firstOrFail();
-
-                if (!$train) {
+                if (!$Schedule) {
                     abort(404);
                 }
 
-                $train->fill($input);
-                $train->save();
+                $Schedule->fill($input);
+                $Schedule->save();
 
-                return response()->json($train, 200);
+                return response()->json($Schedule, 200);
             } else {
                 return response('Unsupported Media Type', 415);
             }
@@ -131,15 +103,15 @@ class TrainController extends Controller
         $acceptHeader = request()->header('Accept');
 
         if ($acceptHeader === 'application/json') {
-            $train = Train::where(['slug' => $slug])->firstOrFail();
+            $Schedule = Schedule::where(['slug' => $slug])->firstOrFail();
 
-            if (!$train) {
+            if (!$Schedule) {
                 abort(404);
             }
 
-            $train->delete();
+            $Schedule->delete();
 
-            $message = ['message' => 'delete successfully', 'train_slug' => $slug];
+            $message = ['message' => 'delete successfully', 'Schedule_slug' => $slug];
             return response()->json($message, 200);
         } else {
             return response('Not Acceptable!', 406);

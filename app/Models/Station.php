@@ -19,8 +19,9 @@ class Station extends Model
     // untuk melakukan update field create_at dan updated_at secara otomatis
     public $timestamp = true;
 
-    public function train()
+    public function trains()
     {
         return $this->hasMany(Train::class);
     }
+    
 }

@@ -11,7 +11,7 @@ class Train extends Model
 
     protected $fillable = ['name', 'slug', 'kelas'];
 
-    public function stations()
+    public function station()
     {
         return $this->belongsTo(Station::class);
     }

@@ -28,3 +28,9 @@ $router->get('admin/station/{slug}', 'StationController@show');
 $router->post('admin/stations', 'StationController@store');
 $router->put('admin/station/{slug}', 'StationController@update');
 $router->delete('admin/station/{slug}', 'StationController@destroy');
+
+$router->get('admin/schedules', 'ScheduleController@index');
+$router->get('admin/schedule/{slug}', 'ScheduleController@show');
+$router->post('admin/schedules', 'ScheduleController@store');
+$router->put('admin/schedule/{slug}', 'ScheduleController@update');
+$router->delete('admin/schedule/{slug}', 'ScheduleController@destroy');

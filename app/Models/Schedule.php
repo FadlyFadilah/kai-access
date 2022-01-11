@@ -10,4 +10,9 @@ class Schedule extends Model
     use HasFactory;
 
     protected $fillable = ['waktu_berangkat', 'waktu_tiba'];
+
+    public function tickets()
+    {
+        return $this->hasMany(Ticket::class);
+    }
 }

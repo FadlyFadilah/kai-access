@@ -34,3 +34,9 @@ $router->get('admin/schedule/{slug}', 'ScheduleController@show');
 $router->post('admin/schedules', 'ScheduleController@store');
 $router->put('admin/schedule/{slug}', 'ScheduleController@update');
 $router->delete('admin/schedule/{slug}', 'ScheduleController@destroy');
+
+$router->get('admin/tickets', 'TicketController@index');
+$router->get('admin/ticket/{id}', 'TicketController@show');
+$router->post('admin/tickets', 'TicketController@store');
+$router->put('admin/ticket/{id}', 'TicketController@update');
+$router->delete('admin/ticket/{id}', 'TicketController@destroy');

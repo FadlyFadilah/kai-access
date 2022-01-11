@@ -14,8 +14,13 @@ class Station extends Model
     // protected $table = 'table_name'
 
     // define column name
-    protected $fillable = ['train_id', 'schedule_id', 'name', 'slug'];
+    protected $fillable = ['nama', 'slug', 'kota'];
 
     // untuk melakukan update field create_at dan updated_at secara otomatis
     public $timestamp = true;
+
+    public function train()
+    {
+        return $this->hasMany(Train::class);
+    }
 }

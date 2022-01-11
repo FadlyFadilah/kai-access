@@ -2,39 +2,30 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Station;
-use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use App\Models\Train;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use SimpleXMLElement;
 
-class StationController extends Controller
+class TrainController extends Controller
 {
-    /**
-     * Create a new controller instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        //
-    }
-
     public function index(Request $request)
     {
         $acceptHeader = $request->header('Accept');
 
         if ($acceptHeader === 'application/json') {
-            $stations = Station::paginate(5)->toArray();
+            $trains = Train::paginate(5)->toArray();
 
             if ($acceptHeader === 'application/json') {
                 $response = [
-                    "total_count" => $stations["total"],
-                    "limit" => $stations["per_page"],
+                    "total_count" => $trains["total"],
+                    "limit" => $trains["per_page"],
                     "pagination" => [
-                        "next_page" => $stations["next_page_url"],
-                        "current_page" => $stations["current_page"]
+                        "next_page" => $trains["next_page_url"],
+                        "current_page" => $trains["current_page"]
                     ],
-                    "data" => $stations["data"],
+                    "data" => $trains["data"],
                 ];
                 return response()->json($response, 200);
             }
@@ -48,13 +39,13 @@ class StationController extends Controller
         $acceptHeader = request()->header('Accept');
 
         if ($acceptHeader === 'application/json') {
-            $station = Station::where(['slug' => $slug])->get();
+            $train = Train::where(['slug' => $slug])->get();
 
-            if (!$station) {
+            if (!$train) {
                 abort(404);
             }
 
-            return response()->json($station, 200);
+            return response()->json($train, 200);
         } else {
             return response('Not Acceptable!', 406);
         }
@@ -69,12 +60,12 @@ class StationController extends Controller
 
             if ($contentTypeHeader === 'multipart/form-data; boundary=<calculated when request is sent>') {
                 $attr = request()->all();
-                $attr['slug'] = Str::slug(request('nama'));
+                $attr['slug'] = Str::slug(request('name'));
 
                 $validationRules = [
-                    "nama" => 'required|min:5',
+                    "name" => 'required|min:5',
                     "slug" => 'required|min:5',
-                    "kota" => 'required|min:5',
+                    "kelas" => 'required|min:5',
                 ];
 
                 $validator = Validator::make($attr, $validationRules);
@@ -82,9 +73,9 @@ class StationController extends Controller
                 if ($validator->fails()) {
                     return response()->json($validator->errors(), 400);
                 }
-                $station = Station::create($attr);
+                $train = Train::create($attr);
 
-                return response()->json($station, 200);
+                return response()->json($train, 200);
             } else {
                 return response('Unsupported Media Type', 415);
             }
@@ -100,14 +91,14 @@ class StationController extends Controller
         if ($acceptHeader === 'application/json') {
             $contentTypeHeader = request()->header('Content-Type');
 
-            if ($contentTypeHeader === 'application/x-www-form-urlencoded') {
+            if ($contentTypeHeader === 'multipart/form-data; boundary=<calculated when request is sent>') {
                 $input = request()->all();
-                $input['slug'] = Str::slug(request('nama'));
+                $input['slug'] = Str::slug(request('name'));
 
                 $validationRules = [
-                    "nama" => 'required|min:5',
+                    "name" => 'required|min:5',
                     "slug" => 'required|min:5',
-                    "kota" => 'required|min:5',
+                    "kelas" => 'required|min:5',
                 ];
 
                 $validator = Validator::make($input, $validationRules);
@@ -116,16 +107,16 @@ class StationController extends Controller
                     return response()->json($validator->errors(), 400);
                 }
 
-                $station = Station::where(['slug' => $slug])->firstOrFail();
+                $train = Train::where(['slug' => $slug])->firstOrFail();
 
-                if (!$station) {
+                if (!$train) {
                     abort(404);
                 }
 
-                $station->fill($input);
-                $station->save();
+                $train->fill($input);
+                $train->save();
 
-                return response()->json($station, 200);
+                return response()->json($train, 200);
             } else {
                 return response('Unsupported Media Type', 415);
             }
@@ -139,15 +130,16 @@ class StationController extends Controller
         $acceptHeader = request()->header('Accept');
 
         if ($acceptHeader === 'application/json') {
-            $station = Station::where(['slug' => $slug])->firstOrFail();
+            $contentTypeHeader = request()->header('Content-Type');
+            $train = Train::where(['slug' => $slug])->firstOrFail();
 
-            if (!$station) {
+            if (!$train) {
                 abort(404);
             }
 
-            $station->delete();
+            $train->delete();
 
-            $message = ['message' => 'delete successfully', 'station_slug' => $slug];
+            $message = ['message' => 'delete successfully', 'train_slug' => $slug];
             return response()->json($message, 200);
         } else {
             return response('Not Acceptable!', 406);

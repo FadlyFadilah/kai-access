@@ -16,3 +16,6 @@
 $router->get('/', function () use ($router) {
     return $router->app->version();
 });
+
+$router->get('admin/stations', 'StationController@index');
+$router->get('admin/station/{station:slug}', 'StationController@show');

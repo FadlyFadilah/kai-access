@@ -12,7 +12,7 @@ class AuthController extends Controller
     public function register(Request $request)
     {
         $this->validate($request, [
-            'name' => 'required|string',
+            'nama' => 'required|string',
             'email' => 'required|email|unique:users',
             'password' => 'required|confirmed',
         ]);
@@ -20,7 +20,7 @@ class AuthController extends Controller
         $input = $request->all();
 
         $validation = [
-            'name' => 'required|string',
+            'nama' => 'required|string',
             'email' => 'required|email|unique:users',
             'password' => 'required|confirmed',
         ];
@@ -32,7 +32,7 @@ class AuthController extends Controller
         }
 
         $user = new User;
-        $user->name = $request->input('name');
+        $user->nama = $request->input('nama');
         $user->email = $request->input('email');
         $passwordP = $request->input('password');
         $user->password = app('hash')->make($passwordP);
@@ -67,5 +67,37 @@ class AuthController extends Controller
             'token_type' => 'bearer',
             'expires_in' => Auth::factory()->getTTL() * 60
         ], 200);
+    }
+
+    public function forgot(Request $request)
+    {
+        $email = $request->input('email');
+
+        $user = User::where(['email' => $email])->first();
+        if ($user) {
+            return response()->json([
+                'email' => $email,
+                'link_reset_password' => env('APP_URL').'/auth/password/new/'.$user['email']
+            ]);
+        }
+
+        return response()->json([
+            'email' => 'Email Tidak Ditemukan'
+        ]);
+
+    }
+
+    public function newPass(Request $request, $id)
+    {
+        $user = User::find($id) ;
+
+        $passwordP = $request->input('password');
+        $user->password = app('hash')->make($passwordP);
+        $user->save();
+
+        return response()->json([
+            'message' => 'Password has been change',
+            'link_to_login' => env('APP_URL').'/auth/login/'
+        ]); 
     }
 }

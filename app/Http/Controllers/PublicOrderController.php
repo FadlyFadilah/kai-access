@@ -57,12 +57,12 @@ class PublicOrderController extends Controller
         if ($acceptHeader === 'application/json') {
             $contentTypeHeader = request()->header('Content-Type');
 
-            if ($contentTypeHeader === 'multipart/form-data; boundary=<calculated when request is sent>') {
-                $ticket = Ticket::find($id)->firstOrFails();
+            if ($contentTypeHeader === 'application/x-www-form-urlencoded') {
+                $ticket = Ticket::find($id)->firstOrFail();
                 $attr = request()->all();
                 $attr['user_id'] = request()->input('user_id');
                 $attr['ticket_id'] = request()->input('ticket_id');
-                $attr['harga'] = $ticket['harga'];
+                $attr['total_harga'] = $ticket['harga'];
 
                 $order = Order::create($attr);
 
@@ -75,53 +75,12 @@ class PublicOrderController extends Controller
         }
     }
 
-    public function update($slug)
+    public function destroy($id)
     {
         $acceptHeader = request()->header('Accept');
 
         if ($acceptHeader === 'application/json') {
-            $contentTypeHeader = request()->header('Content-Type');
-
-            if ($contentTypeHeader === 'multipart/form-data; boundary=<calculated when request is sent>') {
-                $input = request()->all();
-
-                $validationRules = [
-                    "nama" => 'required|min:5',
-                    "slug" => 'required|min:5',
-                    "kelas" => 'required|min:5',
-                    'station_id' => 'required|exists:stations,id'
-                ];
-
-                $validator = Validator::make($input, $validationRules);
-
-                if ($validator->fails()) {
-                    return response()->json($validator->errors(), 400);
-                }
-
-                $order = Order::where(['slug' => $slug])->firstOrFail();
-
-                if (!$order) {
-                    abort(404);
-                }
-
-                $order->fill($input);
-                $order->save();
-
-                return response()->json($order, 200);
-            } else {
-                return response('Unsupported Media Type', 415);
-            }
-        } else {
-            return response('Not Acceptable!', 406);
-        }
-    }
-
-    public function destroy($slug)
-    {
-        $acceptHeader = request()->header('Accept');
-
-        if ($acceptHeader === 'application/json') {
-            $order = Order::where(['slug' => $slug])->firstOrFail();
+            $order = Order::where(['id' => $id])->firstOrFail();
 
             if (!$order) {
                 abort(404);
@@ -129,7 +88,7 @@ class PublicOrderController extends Controller
 
             $order->delete();
 
-            $message = ['message' => 'delete successfully', 'train_slug' => $slug];
+            $message = ['message' => 'delete successfully', 'order_id' => $id];
             return response()->json($message, 200);
         } else {
             return response('Not Acceptable!', 406);

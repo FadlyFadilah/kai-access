@@ -32,12 +32,12 @@ class ScheduleController extends Controller
         }
     }
 
-    public function show($slug)
+    public function show($id)
     {
         $acceptHeader = request()->header('Accept');
 
         if ($acceptHeader === 'application/json') {
-            $Schedule = Schedule::where(['slug' => $slug])->with('station')->get();
+            $Schedule = Schedule::where(['id' => $id])->get();
 
             if (!$Schedule) {
                 abort(404);
@@ -70,17 +70,16 @@ class ScheduleController extends Controller
         }
     }
 
-    public function update($slug)
+    public function update($id, Request $request)
     {
         $acceptHeader = request()->header('Accept');
 
         if ($acceptHeader === 'application/json') {
             $contentTypeHeader = request()->header('Content-Type');
 
-            if ($contentTypeHeader === 'multipart/form-data; boundary=<calculated when request is sent>') {
-                $input = request()->all();
-
-                $Schedule = Schedule::where(['slug' => $slug])->firstOrFail();
+            if ($contentTypeHeader === 'application/x-www-form-urlencoded') {
+                $input = $request->all();
+                $Schedule = Schedule::find($id);
 
                 if (!$Schedule) {
                     abort(404);
@@ -98,12 +97,12 @@ class ScheduleController extends Controller
         }
     }
 
-    public function destroy($slug)
+    public function destroy($id)
     {
         $acceptHeader = request()->header('Accept');
 
         if ($acceptHeader === 'application/json') {
-            $Schedule = Schedule::where(['slug' => $slug])->firstOrFail();
+            $Schedule = Schedule::where(['id' => $id])->firstOrFail();
 
             if (!$Schedule) {
                 abort(404);
@@ -111,7 +110,7 @@ class ScheduleController extends Controller
 
             $Schedule->delete();
 
-            $message = ['message' => 'delete successfully', 'Schedule_slug' => $slug];
+            $message = ['message' => 'delete successfully', 'Schedule_id' => $id];
             return response()->json($message, 200);
         } else {
             return response('Not Acceptable!', 406);

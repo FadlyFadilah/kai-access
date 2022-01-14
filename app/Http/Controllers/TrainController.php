@@ -91,7 +91,7 @@ class TrainController extends Controller
         if ($acceptHeader === 'application/json') {
             $contentTypeHeader = request()->header('Content-Type');
 
-            if ($contentTypeHeader === 'multipart/form-data; boundary=<calculated when request is sent>') {
+            if ($contentTypeHeader === 'application/x-www-form-urlencoded') {
                 $input = request()->all();
                 $input['slug'] = Str::slug(request('nama'));
 

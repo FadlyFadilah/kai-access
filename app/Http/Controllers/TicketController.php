@@ -38,7 +38,7 @@ class TicketController extends Controller
         $acceptHeader = request()->header('Accept');
 
         if ($acceptHeader === 'application/json') {
-            $ticket = Ticket::find($id)->with(['station', 'schedule', 'user'])->get();
+            $ticket = Ticket::find($id)->with(['station', 'schedule'])->get();
 
             if (!$ticket) {
                 abort(404);
@@ -57,14 +57,14 @@ class TicketController extends Controller
         if ($acceptHeader === 'application/json') {
             $contentTypeHeader = request()->header('Content-Type');
 
-            if ($contentTypeHeader === 'multipart/form-data; boundary=<calculated when request is sent>') {
+            if ($contentTypeHeader === 'application/x-www-form-urlencoded') {
                 $attr = request()->all();
-                $attr['slug'] = Str::slug(request('nama'));
 
                 $validationRules = [
-                    "nama" => 'required|min:5',
-                    "slug" => 'required|min:5',
-                    "kelas" => 'required|min:5',
+                    "namaLengkap" => 'required|min:5',
+                    "tujuan" => 'required|min:5',
+                    "harga" => 'required|min:3',
+                    "schedule_id" => 'required|exists:schedules,id',
                     'station_id' => 'required|exists:stations,id'
                 ];
 
@@ -84,21 +84,21 @@ class TicketController extends Controller
         }
     }
 
-    public function update($slug)
+    public function update($id)
     {
         $acceptHeader = request()->header('Accept');
 
         if ($acceptHeader === 'application/json') {
             $contentTypeHeader = request()->header('Content-Type');
 
-            if ($contentTypeHeader === 'multipart/form-data; boundary=<calculated when request is sent>') {
+            if ($contentTypeHeader === 'application/x-www-form-urlencoded') {
                 $input = request()->all();
-                $input['slug'] = Str::slug(request('nama'));
 
                 $validationRules = [
-                    "nama" => 'required|min:5',
-                    "slug" => 'required|min:5',
-                    "kelas" => 'required|min:5',
+                    "namaLengkap" => 'required|min:5',
+                    "tujuan" => 'required|min:5',
+                    "harga" => 'required|min:3',
+                    "schedule_id" => 'required|exists:schedules,id',
                     'station_id' => 'required|exists:stations,id'
                 ];
 
@@ -108,7 +108,7 @@ class TicketController extends Controller
                     return response()->json($validator->errors(), 400);
                 }
 
-                $ticket = Ticket::where(['slug' => $slug])->firstOrFail();
+                $ticket = Ticket::where(['id' => $id])->firstOrFail();
 
                 if (!$ticket) {
                     abort(404);
@@ -126,12 +126,12 @@ class TicketController extends Controller
         }
     }
 
-    public function destroy($slug)
+    public function destroy($id)
     {
         $acceptHeader = request()->header('Accept');
 
         if ($acceptHeader === 'application/json') {
-            $ticket = Ticket::where(['slug' => $slug])->firstOrFail();
+            $ticket = Ticket::where(['id' => $id])->firstOrFail();
 
             if (!$ticket) {
                 abort(404);
@@ -139,7 +139,7 @@ class TicketController extends Controller
 
             $ticket->delete();
 
-            $message = ['message' => 'delete successfully', 'train_slug' => $slug];
+            $message = ['message' => 'delete successfully', 'train_id' => $id];
             return response()->json($message, 200);
         } else {
             return response('Not Acceptable!', 406);

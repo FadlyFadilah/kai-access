@@ -20,8 +20,8 @@ $router->group(['middleware' => ['auth']], function ($router) {
     $router->get('admin/trains', 'TrainController@index');
     $router->get('admin/train/{slug}', 'TrainController@show');
     $router->post('admin/trains', 'TrainController@store');
-    $router->put('admin/trains/{slug}', 'TrainController@update');
-    $router->delete('admin/trains/{slug}', 'TrainController@destroy');
+    $router->put('admin/train/{slug}', 'TrainController@update');
+    $router->delete('admin/train/{slug}', 'TrainController@destroy');
 
     $router->get('admin/stations', 'StationController@index');
     $router->get('admin/station/{slug}', 'StationController@show');
@@ -30,10 +30,10 @@ $router->group(['middleware' => ['auth']], function ($router) {
     $router->delete('admin/station/{slug}', 'StationController@destroy');
 
     $router->get('admin/schedules', 'ScheduleController@index');
-    $router->get('admin/schedule/{slug}', 'ScheduleController@show');
+    $router->get('admin/schedule/{id}', 'ScheduleController@show');
     $router->post('admin/schedules', 'ScheduleController@store');
-    $router->put('admin/schedule/{slug}', 'ScheduleController@update');
-    $router->delete('admin/schedule/{slug}', 'ScheduleController@destroy');
+    $router->put('admin/schedule/{id}', 'ScheduleController@update');
+    $router->delete('admin/schedule/{id}', 'ScheduleController@destroy');
 
     $router->get('admin/tickets', 'TicketController@index');
     $router->get('admin/ticket/{id}', 'TicketController@show');

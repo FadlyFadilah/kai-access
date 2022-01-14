@@ -9,7 +9,7 @@ class Train extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'slug', 'kelas'];
+    protected $fillable = ['nama', 'station_id', 'slug', 'kelas'];
 
     public function station()
     {

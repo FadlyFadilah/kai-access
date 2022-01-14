@@ -40,6 +40,18 @@ $router->group(['middleware' => ['auth']], function ($router) {
     $router->post('admin/tickets', 'TicketController@store');
     $router->put('admin/ticket/{id}', 'TicketController@update');
     $router->delete('admin/ticket/{id}', 'TicketController@destroy');
+
+    $router->get('user/tickets', 'TicketController@index');
+    $router->get('user/ticket/{id}', 'TicketController@show');
+
+    $router->get('user/orders', 'PublicOrderController@index');
+    $router->get('user/order/{id}', 'PublicOrderController@show');
+    $router->post('user/orders/{id}', 'PublicOrderController@store');
+    $router->put('user/order/{id}', 'PublicOrderController@update');
+    $router->delete('user/order/{id}', 'PublicOrderController@destroy');
+
+    $router->get('admin/orders', 'OrderController@index');
+    $router->get('admin/order/{id}', 'OrderController@show');
 });
 
 $router->group(['prefix' => 'auth'], function () use ($router) {

@@ -38,7 +38,7 @@ class TicketController extends Controller
         $acceptHeader = request()->header('Accept');
 
         if ($acceptHeader === 'application/json') {
-            $ticket = Ticket::find($id)->with(['station', 'schedule'])->get();
+            $ticket = Ticket::find($id)->with(['station', 'schedule', 'user'])->get();
 
             if (!$ticket) {
                 abort(404);

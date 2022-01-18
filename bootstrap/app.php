@@ -27,6 +27,7 @@ $app->withFacades();
 
 $app->withEloquent();
 
+class_alias('JD\Cloudder\Facades\Cloudder', 'Cloudder');
 /*
 |--------------------------------------------------------------------------
 | Register Container Bindings
@@ -97,6 +98,7 @@ $app->register(App\Providers\AuthServiceProvider::class);
 
 // Add this line
 $app->register(Tymon\JWTAuth\Providers\LumenServiceProvider::class);
+$app->register(JD\Cloudder\CloudderServiceProvider::class);
 
 /*
 |--------------------------------------------------------------------------

@@ -123,6 +123,8 @@ class AuthController extends Controller
 
         $pesan = 'Silahkan cek email anda.';
         
-        return response()->json($pesan, 200);
+        return response()->json([
+            "Message" => $pesan
+        ], 200);
     }
 }

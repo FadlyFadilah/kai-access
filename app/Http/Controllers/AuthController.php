@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 
 class AuthController extends Controller
@@ -38,7 +39,10 @@ class AuthController extends Controller
         $user->password = app('hash')->make($passwordP);
         $user->save();
 
-        return response()->json($user, 200);
+        return response()->json([
+            "user" => $user,
+            'Verify Password' => env('APP_URL').'/auth/passwordveriy/'.$user['email']
+        ], 200);
     }
 
     public function login(Request $request)
@@ -99,5 +103,26 @@ class AuthController extends Controller
             'message' => 'Password has been change',
             'link_to_login' => env('APP_URL').'/auth/login/'
         ]); 
+    }
+
+    public function sendMail(Request $request, $email)
+    {
+        $user = User::where(['email' => $email])->first();
+        $name = $user->nama;
+        $to = $email;
+        $data = [
+            "name" => env("MAIL_USERNAME"),
+            'Body' => env('APP_URL').'/auth/login/'
+        ];
+
+        Mail::send('email', $data, function($message) use ($name, $to) {
+            $message->to($to, $name)
+            ->subject(env('APP_URL').'/auth/login/');
+            $message->from(env("MAIL_USERNAME"),'Verify Mail');
+        });
+
+        $pesan = 'Silahkan cek email anda.';
+        
+        return response()->json($pesan, 200);
     }
 }

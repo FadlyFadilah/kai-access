@@ -65,6 +65,7 @@ $router->group(['middleware' => ['auth']], function ($router) {
 $router->group(['prefix' => 'auth'], function () use ($router) {
     $router->post('/registration', 'AuthController@register');
     $router->post('/login', 'AuthController@login');
+    $router->post('/passwordverify/{email}', 'AuthController@sendMail');
     $router->post('/password/forgot', 'AuthController@forgot');
     $router->put('/password/new/{id}', 'AuthController@newPass');
 });

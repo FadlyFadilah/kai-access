@@ -100,7 +100,8 @@ class userController extends Controller
 
         return response()->json([
             "data" => $user,
-            "picture_URL" => $file_url
+            "picture_URL" => $file_url,
+            "Verify Password Link" => "kai-access.test/passwordverify/$user->email"
         ], 200);
     }
 

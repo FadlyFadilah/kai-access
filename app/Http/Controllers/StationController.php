@@ -48,7 +48,7 @@ class StationController extends Controller
         $acceptHeader = request()->header('Accept');
 
         if ($acceptHeader === 'application/json') {
-            $station = Station::where(['slug' => $slug])->get();
+            $station = Station::where(['slug' => $slug])->with('trains')->get();
 
             if (!$station) {
                 abort(404);

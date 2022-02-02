@@ -50,23 +50,24 @@ class PublicOrderController extends Controller
         }
     }
 
-    public function store($id)
+    public function store()
     {
+        $tickets = request()->input('ticket_id');
         $acceptHeader = request()->header('Accept');
 
         if ($acceptHeader === 'application/json') {
             $contentTypeHeader = request()->header('Content-Type');
 
             if ($contentTypeHeader === 'application/x-www-form-urlencoded') {
-                $ticket = Ticket::find($id)->firstOrFail();
-                $attr = request()->all();
-                $attr['user_id'] = request()->input('user_id');
-                $attr['ticket_id'] = request()->input('ticket_id');
-                $attr['total_harga'] = $ticket['harga'];
+                $ticket = Ticket::find($tickets)->firstOrFail();
+                $attr = new Order;
+                $attr->user_id = auth()->user()->id;
+                $attr->ticket_id = $ticket['id'];
+                $attr->total_harga = $ticket['harga'];
 
-                $order = Order::create($attr);
+                $attr->save();
 
-                return response()->json($order, 200);
+                return response()->json($attr, 200);
             } else {
                 return response('Unsupported Media Type', 415);
             }

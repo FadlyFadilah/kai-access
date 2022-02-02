@@ -54,7 +54,7 @@ $router->group(['middleware' => ['auth']], function ($router) {
 
     $router->get('user/orders', 'PublicOrderController@index');
     $router->get('user/order/{id}', 'PublicOrderController@show');
-    $router->post('user/orders/{id}', 'PublicOrderController@store');
+    $router->post('user/orders', 'PublicOrderController@store');
     $router->put('user/order/{id}', 'PublicOrderController@update');
     $router->delete('user/order/{id}', 'PublicOrderController@destroy');
 

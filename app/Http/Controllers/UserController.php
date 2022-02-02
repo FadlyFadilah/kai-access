@@ -94,14 +94,16 @@ class userController extends Controller
         $user->nama = $request->input('nama');
         $user->email = $request->input('email');
         $passwordP = $request->input('password');
-        $user->picture = $newName;
+        if ($file) {
+            $user->picture = $newName;
+        }
         $user->password = app('hash')->make($passwordP);
         $user->save();
 
         return response()->json([
             "data" => $user,
             "picture_URL" => $file_url,
-            "Verify Password Link" => "kai-access.test/passwordverify/$user->email"
+            "Verify Password Link" => env('APP_URL') . "/passwordverify/$user->email"
         ], 200);
     }
 
@@ -118,6 +120,7 @@ class userController extends Controller
                 $user->nama = request()->input('nama');
                 $user->email = request()->input('email');
                 $passwordP = request()->input('password');
+                $user->picture = $user->picture;
                 $user->password = app('hash')->make($passwordP);
                 $user->save();
 

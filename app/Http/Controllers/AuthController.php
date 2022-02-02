@@ -81,7 +81,7 @@ class AuthController extends Controller
         if ($user) {
             return response()->json([
                 'email' => $email,
-                'link_reset_password' => env('APP_URL').'/auth/password/new/'.$user['email']
+                'link_reset_password' => env('APP_URL').'/auth/password/new/'.$user['id']
             ]);
         }
 

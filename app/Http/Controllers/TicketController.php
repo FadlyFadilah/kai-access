@@ -139,7 +139,7 @@ class TicketController extends Controller
 
             $ticket->delete();
 
-            $message = ['message' => 'delete successfully', 'train_id' => $id];
+            $message = ['message' => 'delete successfully', 'ticket_id' => $id];
             return response()->json($message, 200);
         } else {
             return response('Not Acceptable!', 406);

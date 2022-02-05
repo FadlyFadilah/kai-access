@@ -73,7 +73,6 @@ class StationController extends Controller
 
                 $validationRules = [
                     "nama" => 'required|min:5',
-                    "slug" => 'required|min:5',
                     "kota" => 'required|min:5',
                 ];
 
@@ -106,7 +105,6 @@ class StationController extends Controller
 
                 $validationRules = [
                     "nama" => 'required|min:5',
-                    "slug" => 'required|min:5',
                     "kota" => 'required|min:5',
                 ];
 

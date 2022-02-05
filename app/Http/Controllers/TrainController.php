@@ -110,10 +110,6 @@ class TrainController extends Controller
 
                 $train = Train::where(['slug' => $slug])->firstOrFail();
 
-                if (!$train) {
-                    abort(404);
-                }
-
                 $train->fill($input);
                 $train->save();
 

@@ -39,11 +39,7 @@ class userController extends Controller
 
         if ($acceptHeader === 'application/json') {
 
-            $user = User::find($id)->with('orders')->first();
-
-            if (!$user) {
-                abort(404);
-            }
+            $user = User::find($id)->with('orders')->firstOrFail();
 
             if ($user->picture == null) {
                 return response()->json($user, 200);
@@ -147,9 +143,6 @@ class userController extends Controller
             }
 
             $destroy = Cloudder::destroyImage($user->picture);
-            if (!$user) {
-                abort(404);
-            }
 
             $user->delete();
 
@@ -179,13 +172,9 @@ class userController extends Controller
                         $uploadResult = $cloudder->getResult();
                         $file_url = $uploadResult["url"];
 
-                        $users->fill([
-                            "nama" => $users->nama,
-                            "email" => $users->email,
-                            "password" => $users->password,
-                            "picture" => $newName,
+                        $users->update([
+                            'picture' => $newName
                         ]);
-                        $users->save();
                         return response()->json([
                             "picture_URL" => $file_url
                         ], 200);
@@ -197,20 +186,19 @@ class userController extends Controller
                     $cloudder = Cloudder::upload(request()->file('picture')->getRealPath(), $newName);
                     $uploadResult = $cloudder->getResult();
                     $file_url = $uploadResult["url"];
+
+                    $users->update([
+                        'picture' => $newName
+                    ]);
+                    return response()->json([
+                        "picture_URL" => $file_url
+                    ], 200);
                 } else {
                     $newName = $users->picture;
+                    return response()->json([
+                        "message" => "Tidak Ada File yang di upload"
+                    ], 200);
                 }
-
-                $users->fill([
-                    "nama" => $users->nama,
-                    "email" => $users->email,
-                    "password" => $users->password,
-                    "picture" => $newName,
-                ]);
-                $users->save();
-                return response()->json([
-                    "picture_URL" => $file_url
-                ], 200);
             } else {
                 return response('Unsupported Media Type', 415);
             }

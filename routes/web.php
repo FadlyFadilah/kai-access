@@ -47,7 +47,7 @@ $router->group(['middleware' => ['auth']], function ($router) {
     $router->post('admin/users', 'UserController@store');
     $router->put('admin/user/{id}', 'UserController@update');
     $router->delete('admin/user/{id}', 'UserController@destroy');
-    $router->post('admin/user/{id}', 'UserController@updatePicture');
+    $router->patch('admin/user/{id}', 'UserController@updatePicture');
 
     $router->get('user/tickets', 'TicketController@index');
     $router->get('user/ticket/{id}', 'TicketController@show');

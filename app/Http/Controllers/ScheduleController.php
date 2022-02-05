@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Schedule;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
 
 class ScheduleController extends Controller
 {
@@ -37,11 +36,7 @@ class ScheduleController extends Controller
         $acceptHeader = request()->header('Accept');
 
         if ($acceptHeader === 'application/json') {
-            $Schedule = Schedule::where(['id' => $id])->get();
-
-            if (!$Schedule) {
-                abort(404);
-            }
+            $Schedule = Schedule::findOrFail($id);
 
             return response()->json($Schedule, 200);
         } else {
@@ -79,11 +74,7 @@ class ScheduleController extends Controller
 
             if ($contentTypeHeader === 'application/x-www-form-urlencoded') {
                 $input = $request->all();
-                $Schedule = Schedule::find($id);
-
-                if (!$Schedule) {
-                    abort(404);
-                }
+                $Schedule = Schedule::findOrFail($id);
 
                 $Schedule->fill($input);
                 $Schedule->save();
@@ -102,11 +93,7 @@ class ScheduleController extends Controller
         $acceptHeader = request()->header('Accept');
 
         if ($acceptHeader === 'application/json') {
-            $Schedule = Schedule::where(['id' => $id])->firstOrFail();
-
-            if (!$Schedule) {
-                abort(404);
-            }
+            $Schedule = Schedule::findOrFail($id);
 
             $Schedule->delete();
 

@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\Ticket;
-use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -38,11 +37,7 @@ class TicketController extends Controller
         $acceptHeader = request()->header('Accept');
 
         if ($acceptHeader === 'application/json') {
-            $ticket = Ticket::find($id)->with(['station', 'schedule'])->get();
-
-            if (!$ticket) {
-                abort(404);
-            }
+            $ticket = Ticket::findOrFail($id)->with(['station', 'schedule']);
 
             return response()->json($ticket, 200);
         } else {
@@ -108,11 +103,7 @@ class TicketController extends Controller
                     return response()->json($validator->errors(), 400);
                 }
 
-                $ticket = Ticket::where(['id' => $id])->firstOrFail();
-
-                if (!$ticket) {
-                    abort(404);
-                }
+                $ticket = Ticket::findOrFail($id);
 
                 $ticket->fill($input);
                 $ticket->save();
@@ -131,12 +122,8 @@ class TicketController extends Controller
         $acceptHeader = request()->header('Accept');
 
         if ($acceptHeader === 'application/json') {
-            $ticket = Ticket::where(['id' => $id])->firstOrFail();
-
-            if (!$ticket) {
-                abort(404);
-            }
-
+            $ticket = Ticket::findOrFail($id);
+            
             $ticket->delete();
 
             $message = ['message' => 'delete successfully', 'ticket_id' => $id];

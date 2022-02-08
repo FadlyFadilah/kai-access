@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Ticket;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
 class TicketController extends Controller
@@ -37,7 +38,7 @@ class TicketController extends Controller
         $acceptHeader = request()->header('Accept');
 
         if ($acceptHeader === 'application/json') {
-            $ticket = Ticket::findOrFail($id)->with(['station', 'schedule']);
+            $ticket = Ticket::where(['id' => $id])->with(['station', 'schedule'])->get();
 
             return response()->json($ticket, 200);
         } else {
@@ -54,13 +55,15 @@ class TicketController extends Controller
 
             if ($contentTypeHeader === 'application/x-www-form-urlencoded') {
                 $attr = request()->all();
+                $attr['user_id'] = Auth::user()->id;
 
                 $validationRules = [
                     "namaLengkap" => 'required|min:5',
                     "tujuan" => 'required|min:5',
                     "harga" => 'required|min:3',
                     "schedule_id" => 'required|exists:schedules,id',
-                    'station_id' => 'required|exists:stations,id'
+                    'station_id' => 'required|exists:stations,id',
+                    'user_id' => 'required|exists:users,id'
                 ];
 
                 $validator = Validator::make($attr, $validationRules);
@@ -88,13 +91,15 @@ class TicketController extends Controller
 
             if ($contentTypeHeader === 'application/x-www-form-urlencoded') {
                 $input = request()->all();
+                $input['user_id'] = Auth::user()->id;
 
                 $validationRules = [
                     "namaLengkap" => 'required|min:5',
                     "tujuan" => 'required|min:5',
                     "harga" => 'required|min:3',
                     "schedule_id" => 'required|exists:schedules,id',
-                    'station_id' => 'required|exists:stations,id'
+                    'station_id' => 'required|exists:stations,id',
+                    'user_id' => 'required|exists:users,id'
                 ];
 
                 $validator = Validator::make($input, $validationRules);

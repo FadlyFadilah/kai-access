@@ -36,7 +36,7 @@ class OrderController extends Controller
         $acceptHeader = request()->header('Accept');
 
         if ($acceptHeader === 'application/json') {
-            $order = Order::find($id)->with(['ticket', 'user'])->get();
+            $order = Order::Where(['id' => $id])->with(['ticket', 'user'])->get();
 
             if (!$order) {
                 abort(404);

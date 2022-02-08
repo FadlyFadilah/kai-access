@@ -37,12 +37,12 @@ class PublicTicketController extends Controller
         $acceptHeader = request()->header('Accept');
 
         if ($acceptHeader === 'application/json') {
-            $ticket = Ticket::find($id)->with(['station', 'schedule'])->get();
+            $ticket = Ticket::Where(['user_id' => Auth::user()->id])->Where(['id' => $id])->OrderBy("id", "DESC")->with(['station', 'schedule'])->get();
 
             if (!$ticket) {
                 abort(404);
             }
-
+            
             return response()->json($ticket, 200);
         } else {
             return response('Not Acceptable!', 406);

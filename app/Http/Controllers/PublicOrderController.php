@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Order;
 use App\Models\Ticket;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
 class PublicOrderController extends Controller
@@ -14,7 +15,7 @@ class PublicOrderController extends Controller
         $acceptHeader = $request->header('Accept');
 
         if ($acceptHeader === 'application/json') {
-            $orders = Order::paginate(5)->toArray();
+            $orders = Order::Where(['user_id' => Auth::user()->id])->OrderBy("id", "DESC")->paginate(5)->toArray();
 
             if ($acceptHeader === 'application/json') {
                 $response = [
@@ -38,7 +39,7 @@ class PublicOrderController extends Controller
         $acceptHeader = request()->header('Accept');
 
         if ($acceptHeader === 'application/json') {
-            $order = Order::find($id)->with(['ticket', 'user'])->get();
+            $order = Order::Where(['user_id' => Auth::user()->id])->Where(['id' => $id])->OrderBy("id", "DESC")->with(['ticket', 'user'])->get();
 
             if (!$order) {
                 abort(404);
@@ -53,18 +54,20 @@ class PublicOrderController extends Controller
     public function store()
     {
         $tickets = request()->input('ticket_id');
+
         $acceptHeader = request()->header('Accept');
 
         if ($acceptHeader === 'application/json') {
             $contentTypeHeader = request()->header('Content-Type');
 
             if ($contentTypeHeader === 'application/x-www-form-urlencoded') {
-                $ticket = Ticket::find($tickets)->firstOrFail();
+                $ticket = Ticket::where(["id" => $tickets])->firstOrFail();
+
                 $attr = new Order;
                 $attr->user_id = auth()->user()->id;
                 $attr->ticket_id = $ticket['id'];
                 $attr->total_harga = $ticket['harga'];
-
+                
                 $attr->save();
 
                 return response()->json($attr, 200);

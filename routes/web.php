@@ -41,6 +41,8 @@ $router->group(['middleware' => ['auth']], function ($router) {
     $router->put('admin/ticket/{id}', 'TicketController@update');
     $router->delete('admin/ticket/{id}', 'TicketController@destroy');
 
+    $router->get('user/tickets', 'PublicTicketController@index');
+    $router->get('user/ticket/{id}', 'PublicTicketController@show');
     
     $router->get('admin/users', 'UserController@index');
     $router->get('admin/user/{id}', 'UserController@show');
@@ -48,9 +50,6 @@ $router->group(['middleware' => ['auth']], function ($router) {
     $router->put('admin/user/{id}', 'UserController@update');
     $router->delete('admin/user/{id}', 'UserController@destroy');
     $router->patch('admin/user/{id}', 'UserController@updatePicture');
-
-    $router->get('user/tickets', 'TicketController@index');
-    $router->get('user/ticket/{id}', 'TicketController@show');
 
     $router->get('user/orders', 'PublicOrderController@index');
     $router->get('user/order/{id}', 'PublicOrderController@show');

@@ -17,6 +17,7 @@ class CreateTicketsTable extends Migration
             $table->id();
             $table->foreignId('station_id');
             $table->foreignId('schedule_id');
+            $table->foreignId('user_id');
             $table->string('namaLengkap');
             $table->string('tujuan');
             $table->integer('harga');
